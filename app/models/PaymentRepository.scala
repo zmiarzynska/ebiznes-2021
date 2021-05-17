@@ -16,13 +16,13 @@ class PaymentRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(impl
   class PaymentTable(tag: Tag) extends Table[Payment](tag, "payment") {
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
     def amount = column[Int]("amount")
-    def payment_type = column[String]("payment_type")
+    def payment_type = column[Int]("payment_type")
     def * = (id, amount, payment_type) <> ((Payment.apply _).tupled, Payment.unapply)
   }
 
   val payment = TableQuery[PaymentTable]
 
-  def create(amount: Int, payment_type: String): Future[Payment] = db.run {
+  def create(amount: Int, payment_type: Int): Future[Payment] = db.run {
     (payment.map(c => (c.amount, c.payment_type))
       returning payment.map(_.id)
 
@@ -34,10 +34,15 @@ class PaymentRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(impl
     payment.result
   }
 
-  def delete(id: Int): Future[Unit] = db.run(payment.filter(_.id === id).delete).map(_ => ())
 
-  def update(id: Int, new_payment: Payment): Future[Unit] = {
+  def getById(id: Int): Future[Option[Payment]] = db.run {
+    payment.filter(_.id === id).result.headOption
+  }
+
+  def delete(id: Int): Future[Int] = db.run(payment.filter(_.id === id).delete)
+
+  def update(id: Int, new_payment: Payment): Future[Int] = {
     val paymentToUpdate: Payment = new_payment.copy(id)
-    db.run(payment.filter(_.id === id).update(paymentToUpdate)).map(_ => ())
+    db.run(payment.filter(_.id === id).update(paymentToUpdate))
   }
 }

@@ -1,5 +1,12 @@
 # --- !Ups
 
+CREATE TABLE "user"
+(
+    "id"       INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "username" VARCHAR NOT NULL,
+    "password" VARCHAR NOT NULL
+);
+
 CREATE TABLE "category"
 (
     "id"   INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -20,10 +27,10 @@ CREATE TABLE "account"
     "id"         INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "first_name" VARCHAR NOT NULL,
     "last_name"  VARCHAR NOT NULL,
-    "city"       VARCHAR NOT NULL,
+    "city"       VARCHAR NOT NULL
 );
 
-CREATE TABLE "card"
+CREATE TABLE "cart"
 (
     "id"     INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "number" INTEGER NOT NULL
@@ -35,7 +42,7 @@ CREATE TABLE "shipping"
     "street" VARCHAR NOT NULL,
     "city"   VARCHAR NOT NULL,
     "house"  INTEGER NOT NULL,
-    "phone"  INTEGER NOT NULL,
+    "phone"  INTEGER NOT NULL
 );
 
 CREATE TABLE "payment"
@@ -54,13 +61,6 @@ CREATE TABLE "rate"
     FOREIGN KEY (username_id) references user (id)
 );
 
-CREATE TABLE "user"
-(
-    "id"       INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "username" VARCHAR NOT NULL,
-    "password" VARCHAR NOT NULL
-);
-
 CREATE TABLE "wishlist"
 (
     "id"          INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -77,15 +77,16 @@ CREATE TABLE "order"
     "payment"     INTEGER NOT NULL,
     FOREIGN KEY (payment) references payment (id)
 );
+
 # --- !Downs
 
-DROP TABLE "category"
-DROP TABLE "item"
-DROP TABLE "account"
-DROP TABLE "card"
-DROP TABLE "shipping"
-DROP TABLE "payment"
-DROP TABLE "rate"
-DROP TABLE "user"
-DROP TABLE "wishlist"
-DROP TABLE "order"
+DROP TABLE "category";
+DROP TABLE "item";
+DROP TABLE "account";
+DROP TABLE "cart";
+DROP TABLE "shipping";
+DROP TABLE "payment";
+DROP TABLE "rate";
+DROP TABLE "user";
+DROP TABLE "wishlist";
+DROP TABLE "order";

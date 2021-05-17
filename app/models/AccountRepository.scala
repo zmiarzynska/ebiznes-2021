@@ -7,7 +7,7 @@ import scala.concurrent.{ Future, ExecutionContext }
 
 @Singleton
 class AccountRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) {
-  private val dbConfig = dbConfigProvider.get[JdbcProfile]
+  val dbConfig = dbConfigProvider.get[JdbcProfile]
 
   import dbConfig._
   import profile.api._
@@ -16,7 +16,7 @@ class AccountRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(imp
   private class AccountTable(tag: Tag) extends Table[Account](tag, "account") {
 
     /** The ID column, which is the primary key, and auto incremented */
-    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
+    def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
 
     /** The name column */
     def first_name = column[String]("first_name")
@@ -74,19 +74,19 @@ class AccountRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(imp
 
 
 
-  def getById(id: Long): Future[Account] = db.run {
+  def getById(id: Int): Future[Account] = db.run {
     account.filter(_.id === id).result.head
   }
 
-  def getByIdOption(id: Long): Future[Option[Account]] = db.run {
+  def getByIdOption(id: Int): Future[Option[Account]] = db.run {
     account.filter(_.id === id).result.headOption
   }
 
-  def delete(id: Long): Future[Unit] = db.run(account.filter(_.id === id).delete).map(_ => ())
+  def delete(id: Int): Future[Int] = db.run(account.filter(_.id === id).delete)
 
-  def update(id: Long, new_account: Account): Future[Unit] = {
+  def update(id: Int, new_account: Account): Future[Int] = {
     val accountToUpdate: Account = new_account.copy(id)
-    db.run(account.filter(_.id === id).update(accountToUpdate)).map(_ => ())
+    db.run(account.filter(_.id === id).update(accountToUpdate))
   }
 
 }
